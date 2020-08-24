@@ -11,10 +11,11 @@ femm.newdocument(0)
 
 ########################VARIABLES################################
 #coil dimensions#
-inner_radius=0;
-outer_radius=7.75;
-wire_spacing=0.5;
-wire_thickness=0.25; #mm
+inner_radius=2000;
+outer_radius=40000;
+wire_spacing=188;
+wire_diameter=60; #mm
+turns = 154; #number of turns 
 #Current#
 i=1; 
 
