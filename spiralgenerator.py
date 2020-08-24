@@ -14,7 +14,7 @@ femm.newdocument(0)
 inner_radius=0;
 outer_radius=7.75;
 wire_spacing=0.5;
-wire_thickness=0.25; #mm, 10awg magnet wire
+wire_thickness=0.25; #mm
 #Current#
 i=1; 
 
@@ -30,7 +30,7 @@ r=inner_radius;
 
 
 # Set up problem type. This sets up problem as an axisymmetric problem with units of micrometers
-femm.mi_probdef(500000,'micrometers','axi',10**(-8),0,30,0);
+femm.mi_probdef(0,'micrometers','axi',10**(-8),0,30,0);
 
 # Add materials to our workspace
 femm.mi_addmaterial('magnet',1.05,1.05,922850,0,0.667,0,0,1,0,0,0);
