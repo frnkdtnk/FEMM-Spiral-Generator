@@ -4,8 +4,7 @@ import femm
 
 # Start up and connect to FEMM
 femm.openfemm()
-
-# Create a new electrostatics problem
+# Create a new msgnetics problem
 femm.newdocument(0)
 
 
@@ -14,29 +13,29 @@ femm.newdocument(0)
 inner_radius=2000;
 outer_radius=40000;
 wire_spacing=188;
-wire_diameter=60; #mm
-turns = 154; #number of turns 
+wire_thickness=60; 
 #Current#
 i=1; 
 
-#wall dimensions#
-wall_distance=5;
-wall_radius=3;
-wall_thickness=0.5;
+#magnet wall dimensions#
+wall_distance=30000;
+wall_radius=40000;
+wall_thickness=10000;
 
 #functional variables#
-EXPERIMENT=10;
+EXPERIMENT=1;
 r=0;
 r=inner_radius;
-
-
+automesh = 1;
+meshsize= 30;
+minangle= 1;
 # Set up problem type. This sets up problem as an axisymmetric problem with units of micrometers
-femm.mi_probdef(0,'micrometers','axi',10**(-8),0,30,0);
+femm.mi_probdef(0,'micrometers','axi',10**(-8),0,minangle,0);
 
 # Add materials to our workspace
 femm.mi_addmaterial('magnet',1.05,1.05,922850,0,0.667,0,0,1,0,0,0);
 femm.mi_addmaterial('air',1,1,0);
-femm.mi_addmaterial('10awgcopper',1,1,0,0,58,0,0,1,3,0,0,1,2588);
+femm.mi_addmaterial('36awgcopper',1,1,0,i/((wire_thickness/2)**(2)*3.14),58,0,0,1,3,0,0,1,127);#change J applied current
 
 #define circuit with current i in series
 femm.mi_addcircprop('spiral', i, 1);
@@ -45,7 +44,7 @@ femm.mi_addcircprop('spiral', i, 1);
 femm.mi_drawrectangle(0,wall_distance,wall_radius,(wall_distance+wall_thickness));
 femm.mi_addblocklabel(wall_radius/2,(wall_distance+wall_thickness/2)); 
 femm.mi_selectlabel(wall_radius/2,(wall_distance+wall_thickness/2));
-femm.mi_setblockprop('magnet',0,1,0,270,0,0);
+femm.mi_setblockprop('magnet',automesh,meshsize,0,270,0,0);
 femm.mi_clearselected();
 
 #draw and label spiral cross section
@@ -61,7 +60,7 @@ while(r<outer_radius):
         femm.mi_addarc(outer_edge,0,inner_edge,0,180,EXPERIMENT);#other half of circle
         femm.mi_addblocklabel(((inner_edge+outer_edge)/2),0); 
         femm.mi_selectlabel(((inner_edge+outer_edge)/2),0);
-        femm.mi_setblockprop('10awgcopper',0,1,'spiral',None,0,1);
+        femm.mi_setblockprop('36awgcopper',automesh,meshsize,'spiral',0,0,1);
         femm.mi_clearselected();
         r=outer_edge;
 
@@ -69,15 +68,16 @@ while(r<outer_radius):
 #define the air
 femm.mi_addblocklabel((wall_radius/2),(wall_distance/2));
 femm.mi_selectlabel((wall_radius/2),(wall_distance/2));
-femm.mi_setblockprop('air',0,1,0);
+femm.mi_setblockprop('air',automesh,meshsize,0);
 femm.mi_clearselected();
 
-femm.mi_makeABC(7,(outer_radius*2),0,0,0) 
+femm.mi_makeABC(1,((wall_distance+outer_radius+wall_radius)*2),0,0,0) 
 
 femm.mi_zoomnatural();
 
 # Save the geometry to disk so we can analyze it
 femm.mi_saveas('spiral.fem');
+
 
 
 
